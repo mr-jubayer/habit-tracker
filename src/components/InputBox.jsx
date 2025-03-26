@@ -1,7 +1,7 @@
 import { useState } from "react";
 import Button from "./Button";
 import { useDispatch } from "react-redux";
-import { addHabit } from "../features/habitSlice";
+import { postNewHabit } from "../features/habitSlice";
 
 const InputBox = () => {
   const [habit, setHabit] = useState({
@@ -13,7 +13,15 @@ const InputBox = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    dispatch(addHabit(habit));
+    dispatch(
+      postNewHabit({
+        id: Date.now().toString(),
+        name: habit.name,
+        frequency: habit.frequency,
+        completedDates: [],
+        createdAt: new Date().toISOString(),
+      })
+    );
   };
   return (
     <form onSubmit={handleSubmit} className="bg-gray-100 rounded-md p-4">

@@ -1,11 +1,18 @@
 import { useSelector } from "react-redux";
 import Button from "./Button";
 import { useDispatch } from "react-redux";
-import { removeHabit, toggleHabit } from "../features/habitSlice";
+import { getAllHabit, removeHabit, toggleHabit } from "../features/habitSlice";
+import { useEffect } from "react";
 
 const HabitList = () => {
-  const { habits } = useSelector((state) => state.habits);
+  const { habits, isLoading } = useSelector((state) => state.habits);
+  const dispatch = useDispatch();
 
+  useEffect(() => {
+    dispatch(getAllHabit());
+  }, [dispatch]);
+
+  if (isLoading) return <h2>Loading...</h2>;
   return (
     <div>
       {habits.map((habit) => (
@@ -68,7 +75,11 @@ const HabitCard = ({ habit }) => {
       </div>
       <p>
         {" "}
-        Current Streak: {getStreak(habit)} {habit.frequency.slice(0, -2)}s
+        Current Streak: {getStreak(habit)}{" "}
+        {habit.frequency !== "Daily"
+          ? habit.frequency.slice(0, -2)
+          : habit.frequency.slice(0, -3) + "y"}
+        s
       </p>
       <progress
         className="progress progress-info w-full"

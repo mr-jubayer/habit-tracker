@@ -1,4 +1,6 @@
+import { createAsyncThunk } from "@reduxjs/toolkit";
 import { createSlice } from "@reduxjs/toolkit";
+import { getHabits, postHabit } from "../api/habits/route";
 
 const initialState = {
   habits: [],
@@ -6,21 +8,23 @@ const initialState = {
   error: null,
 };
 
+export const getAllHabit = createAsyncThunk("habits/getHabits", async () => {
+  const habits = await getHabits();
+
+  return habits.habits;
+});
+
+export const postNewHabit = createAsyncThunk(
+  "habit/postHabit",
+  async (payload) => {
+    await postHabit(payload);
+  }
+);
+
 const habitSlice = createSlice({
   name: "habits",
   initialState,
   reducers: {
-    addHabit(state, action) {
-      const newHabit = {
-        id: Date.now().toString(),
-        name: action.payload.name,
-        frequency: action.payload.frequency,
-        completedDates: [],
-        createdAt: new Date().toISOString(),
-      };
-
-      state.habits.push(newHabit);
-    },
     removeHabit(state, action) {
       const habitIndex = state.habits.indexOf(action.payload.id);
 
@@ -39,6 +43,31 @@ const habitSlice = createSlice({
         }
       }
     },
+  },
+  extraReducers(builder) {
+    builder
+      .addCase(getAllHabit.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(getAllHabit.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.habits = action.payload;
+      })
+      .addCase(getAllHabit.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.error.message | "fetch to failed!";
+      })
+
+      .addCase(postNewHabit.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(postNewHabit.fulfilled, (state) => {
+        state.isLoading = false;
+      })
+      .addCase(postNewHabit.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.payload.message || "failed to post!";
+      });
   },
 });
 
