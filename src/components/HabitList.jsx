@@ -29,9 +29,28 @@ const HabitCard = ({ habit }) => {
   const handleToggle = (id) => {
     dispatch(toggleHabit({ id, date: today }));
   };
+
+  const getStreak = (habit) => {
+    let streak = 0;
+
+    let currentDate = new Date();
+
+    while (true) {
+      const dateString = currentDate.toISOString().split("T")[0];
+
+      if (habit.completedDates.includes(dateString)) {
+        streak++;
+        currentDate.setDate(currentDate.getDate() - 1);
+      } else {
+        break;
+      }
+    }
+
+    return streak;
+  };
   return (
-    <div className="p-5 rounded shadow bg-white">
-      <div className=" my-2 flex justify-between items-center">
+    <div className="p-5 rounded shadow bg-white my-2">
+      <div className=" flex justify-between items-center">
         <div>
           <h2 className="text-xl font-semibold"> {habit.name} </h2>
           <p> {habit.frequency} </p>
@@ -47,10 +66,10 @@ const HabitCard = ({ habit }) => {
           </Button>
         </div>
       </div>
-      <p> Current Streak: 0 Days </p>
+      <p> Current Streak: {getStreak(habit)} Days </p>
       <progress
         className="progress progress-info w-full"
-        value="100"
+        value={(getStreak(habit) / 30) * 100}
         max="100"
       ></progress>
     </div>
