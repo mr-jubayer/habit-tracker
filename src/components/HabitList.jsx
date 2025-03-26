@@ -66,7 +66,10 @@ const HabitCard = ({ habit }) => {
           </Button>
         </div>
       </div>
-      <p> Current Streak: {getStreak(habit)} Days </p>
+      <p>
+        {" "}
+        Current Streak: {getStreak(habit)} {habit.frequency.slice(0, -2)}s
+      </p>
       <progress
         className="progress progress-info w-full"
         value={(getStreak(habit) / 30) * 100}
