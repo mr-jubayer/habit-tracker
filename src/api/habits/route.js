@@ -1,9 +1,7 @@
 import getStorage from "../storage";
 
 const postHabit = async (payload) => {
-  console.log("at route", payload);
-
-  await setTimeout(() => {}, 100);
+  await new Promise((resolve) => setTimeout(resolve, 100));
 
   const data = getStorage("habits", {
     habits: [],
@@ -13,10 +11,14 @@ const postHabit = async (payload) => {
 
   data.habits.push(payload);
   localStorage.setItem("habits", JSON.stringify(data));
+
+  console.log("end");
+
+  return data.habits;
 };
 
 const getHabits = async () => {
-  await setTimeout(() => {}, 3000);
+  await new Promise((resolve) => setTimeout(resolve, 300));
 
   const data = localStorage.getItem("habits");
   return JSON.parse(data);

@@ -1,11 +1,7 @@
-const getStorage = (key, ifNoData) => {
-  let data = localStorage.getItem(key);
+const getStorage = (key, defaultValue) => {
+  let stored = localStorage.getItem(key);
 
-  if (!data) {
-    localStorage.setItem(key, JSON.stringify(ifNoData));
-  }
-
-  return JSON.parse(data);
+  return stored ? JSON.parse(stored) : defaultValue;
 };
 
 export default getStorage;

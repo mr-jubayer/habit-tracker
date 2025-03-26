@@ -17,7 +17,10 @@ export const getAllHabit = createAsyncThunk("habits/getHabits", async () => {
 export const postNewHabit = createAsyncThunk(
   "habit/postHabit",
   async (payload) => {
-    await postHabit(payload);
+    const habits = await postHabit(payload);
+    console.log("after posting");
+
+    return habits;
   }
 );
 
@@ -61,12 +64,13 @@ const habitSlice = createSlice({
       .addCase(postNewHabit.pending, (state) => {
         state.isLoading = true;
       })
-      .addCase(postNewHabit.fulfilled, (state) => {
+      .addCase(postNewHabit.fulfilled, (state, action) => {
         state.isLoading = false;
+        state.habits = action.payload;
       })
       .addCase(postNewHabit.rejected, (state, action) => {
         state.isLoading = false;
-        state.error = action.payload.message || "failed to post!";
+        state.error = action?.payload?.message || "failed to post!";
       });
   },
 });
